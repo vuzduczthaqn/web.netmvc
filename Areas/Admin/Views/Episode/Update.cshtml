@@ -1,0 +1,54 @@
+﻿@using WebAnime.Models.Entities
+@model WebAnime.Models.ViewModel.Admin.EpisodeViewModel
+
+@{
+    ViewBag.Title = "Cập nhật";
+    var anime = ViewBag.Anime as Animes ?? new Animes();
+    var server = ViewBag.Server as Servers ?? new Servers();
+    
+}
+
+<h3>Cập nhật cho <span class="text-danger">@anime.Title</span></h3>
+<h4>Server <span class="text-info">@server.Name</span></h4>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(x=>x.AnimeId)
+    @Html.HiddenFor(x=>x.ServerId)
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.Title, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Title, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.SortOrder, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.TextBoxFor(x => x.SortOrder, new { @class = "form-control", type = "number", min = "1", max = "9999", placeholder = "1 tới 9999" })
+            @Html.ValidationMessageFor(x => x.SortOrder, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        @Html.LabelFor(x => x.Url, new { @class = "col-1 col-form-label fw-bold" })
+        <div class="col-8">
+            @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Url, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+    </div>
+}
+@Html.ActionLink("Quay về","Index",new {id = anime.Id,serverId = server.Id},new {@class="btn btn-primary"})
+
+@section footerJs
+{
+    @Html.Partial("_ValidationScriptsPartial")
+}

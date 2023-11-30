@@ -1,0 +1,196 @@
+﻿@using WebAnime.Models.Entities;
+@using System.Text;
+@model IEnumerable<WebAnime.Models.ViewModel.Admin.AnimeViewModel>
+@{
+    ViewBag.Title = "Quản lý Anime";
+    int firstServerId = (int)ViewBag.FirstServerId;
+}
+
+    <div class="row">
+        <div class="col-auto">
+            <h2>
+                Quản lý Anime
+            </h2>
+        </div>
+        <div class="col-auto">
+            @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
+        </div>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        <div class="row mb-3 justify-content-center">
+            <label class="col-form-label col-auto" for="searchTitle">Tiêu đề</label>
+            <div class="col-3">
+                <input type="text" name="searchTitle" id="searchTitle" value="" class="form-control" />
+            </div>
+            <div class="col-3">
+                <button type="button" class="btn btn-info btnSearch">Tìm kiếm</button>
+            </div>
+            <label class="col-form-label col-auto" for="pageNumber">Trang</label>
+
+            <div class="col-2">
+                <input type="number" name="pageNumber" id="pageNumber" class="form-control" min="1" max="10" value="1" />
+            </div>
+
+        </div>
+    }
+
+    <div class="">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.Title)
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.OriginalTitle)
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.Duration)
+
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.TotalEpisodes)
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.Synopsis)
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.Release)
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        @Html.DisplayNameFor(x => x.CategoriesId)
+                    </th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        Chức năng
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody id="tableBody">
+                
+            </tbody>
+        </table>
+    </div>
+@section footerJs
+{
+    <script>
+        $(`.btnShowSynopsis`).click(function () {
+            var synopsisHtml = $(this).data(`synopsisHtml`);
+            $(`.animeSynopsis`).html(synopsisHtml);
+        });
+        const pageSize = 5;
+        fetchData('', 1, pageSize);
+
+        function fetchData(searchTitle, pageNumber, pageSize, isChangeNumeric = true) {
+            if (pageNumber <= 0 || pageSize <= 0) return;
+            const url = `@Url.Action("GetPaging", "Anime")`;
+            console.log(url);
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    searchTitle: searchTitle,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    dumpData(response.data);
+                    if (isChangeNumeric === true)
+                        changeNumeric(parseInt(response.TotalPages));
+
+                }
+            });
+        }
+        function changeNumeric(totalPages) {
+            console.log('change numeric');
+            //if (totalPages <= 0) return;
+            const numberic = $(`#pageNumber`);
+            const minPage = totalPages <= 0 ? totalPages : 1;
+
+            numberic.attr('min', minPage);
+            numberic.attr('max', totalPages);
+            numberic.val(minPage);
+        }
+        function dumpData(data) {
+            const tableBody = $(`#tableBody`);
+            tableBody.html('');
+
+            for (let i = 0; i < data.length; ++i) {
+                const item = data[i];
+                const html =
+                    `
+                <tr>
+                    <td class="align-middle text-center"><h6 class="mb-0 text-sm">${item.Title}</h6></td>
+                    <td class="align-middle text-center"><h6 class="mb-0 text-sm"> <p class="text-xs font-weight-bold mb-0">${item.OriginalTitle}</p></h6></td>
+                    <td class="align-middle text-center">
+                        <h6 class="mb-0 text-sm">
+                            <p class="text-xs font-weight-bold mb-0">${item.Duration}  phút</p>
+                        </h6>
+                    </td>
+                    <td class="align-middle text-center">
+                        <h6 class="mb-0 text-sm">
+                            <p class="text-xs font-weight-bold mb-0">${item.TotalEpisodes}</p>
+                        </h6>
+                    </td>
+                    <td class="align-middle text-center">
+                        <button class="btn me-1 mb-1 btn-light-primary text-primary btn-lg px-4 fs-4 btnShowSynopsis"
+                                data-bs-toggle="modal"
+                                data-bs-target="#btn-anime-synopsis"
+                                data-synopsis-html="${item.Synopsis}">
+                            Xem
+                        </button>
+                    </td>
+                    <td class="align-middle text-center">
+
+                            <h6 class="mb-0 text-sm"> <p class="text-xs font-weight-bold mb-0">${item.Release}</p></h6>
+
+
+                    </td>
+
+                    <td class="align-middle text-center">${item.Categories}</td>
+                    <td class="align-middle text-center">
+                        <div class="btn-group w-100">
+                            <a href="@Url.Action("Update", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-primary text-decoration-none">Sửa</a>
+
+                            <a href="@Url.Action("Index", "Episode", new { area = "Admin" })?animeId=${item.Id}&serverId=@firstServerId" class="btn btn-info text-white">Tập</a>
+
+                            <a href="@Url.Action("Delete", "Anime", new { area = "Admin" })/${item.Id}" class = "btn btn-danger text-decoration-none">Xóa</a>
+
+                        </div>
+                    </td>
+                    </tr>`;
+                    tableBody.append(html);
+            }
+
+        }
+
+        $('#tableBody').on('click',
+            '.btnShowSynopsis',
+            function() {
+                var synopsisHtml = $(this).data('synopsisHtml');
+                $('.animeSynopsis').html('');
+                $('.animeSynopsis').html(synopsisHtml);
+            });
+
+
+        $(`.btnSearch`).click(function() {
+            const searchTitle = $(`#searchTitle`).val();
+            console.log(searchTitle);
+            fetchData(searchTitle,1,pageSize);
+        });
+
+        $(`#pageNumber`).change(function() {
+            const current = $(this);
+            const pageNumber = current.val();
+            const searchTitle = $(`#searchTitle`).val();
+            console.log('search: ' + searchTitle);
+            fetchData(searchTitle, pageNumber, pageSize,false);
+        })
+    </script>
+}
+

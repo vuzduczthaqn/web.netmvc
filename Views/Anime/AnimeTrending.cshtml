@@ -1,0 +1,73 @@
+﻿@model WebAnime.Models.ViewModel.Client.AnimeItemViewModel
+<h4>
+    <a href="@Url.Action("Index","Home")">Trang chủ</a>
+    >
+    <a href="@Url.Action("AnimeRecenly", "Anime")">Anime hot nhất</a>
+</h4>
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="row searchAnime">
+            =
+        </div>
+    </div>
+</div>
+}
+@section footerJs
+{
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="~/Resources/Client/js/jquery.nice-select.min.js"></script>
+    <script>
+        const searchAnime = $(`.searchAnime`);
+        searchAnime.html('');
+         sendRequest(1)
+        function sendRequest(startGetter) {
+                 const url = `@Url.Action("AnimeRecenlyData", "Anime")`;
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: {
+                        start: startGetter
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+                        dumpData(response.data);
+                        if (isChangeNumeric === true)
+                            changeNumeric(parseInt(response.TotalPages));
+
+                    }
+                });
+            function dumpData(data) {
+
+                for (let i = 0; i < data.length; ++i) {
+
+                    const item = data[i];
+                    const html = `
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" data-setbg="${item.Poster}">
+                            <div class="ep">${item.CurrentEpisode} / ${item.TotalEpisode}</div>
+                            <div class="comment"><i class="fa fa-comments"></i> ${item.CommentCount}</div>
+                            <div class="view"><i class="fa fa-eye"></i> ${item.ViewCount}</div>
+                        </div>
+                        <div class="product__item__text">
+                            <ul>
+                                <li>${item.Status}</li>
+                                <li>${item.Type}</li>
+                            </ul>
+                            <h5><a href="#">${item.Title}</a></h5>
+                        </div>
+                    </div>
+                </div>`;
+                    searchAnime.append(html);
+
+                }
+                $('.set-bg').each(function () {
+                    var bg = $(this).data('setbg');
+                    $(this).css('background-image', 'url(' + bg + ')');
+                });
+            }
+        }
+
+    </script>
+}
