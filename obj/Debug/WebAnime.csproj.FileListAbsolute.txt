@@ -165,3 +165,5 @@ D:\laptrinh-web\WebAnime\bin\Microsoft.Owin.Security.Google.xml
 D:\laptrinh-web\WebAnime\bin\Microsoft.Owin.Security.Jwt.xml
 D:\laptrinh-web\WebAnime\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\laptrinh-web\WebAnime\bin\CKFinder.dll
+D:\laptrinh-web\WebAnime\obj\Debug\WebAnime.Migrations.completeproject.resources
+D:\laptrinh-web\WebAnime\obj\Debug\WebAnime.csproj.GenerateResource.cache

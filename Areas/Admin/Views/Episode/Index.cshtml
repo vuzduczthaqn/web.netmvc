@@ -10,7 +10,7 @@
     var currentServerId = (int)ViewBag.ServerId;
     var currentAnimeId = anime?.Id;
 }
-
+@Html.ActionLink("Thêm tập mới", "Create", new { animeId = anime.Id, serverId = currentServerId }, new { @class = "btn btn-primary my-2" })
 @if (anime != null)
 {
 

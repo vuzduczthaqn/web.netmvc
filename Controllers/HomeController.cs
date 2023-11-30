@@ -34,7 +34,7 @@ namespace WebAnime.Controllers
 
             return await Task.FromResult(View());
         }
-        async Task LoadDependencies()
+        public async Task LoadDependencies()
         {
             var ageRatingTask = _ageRatingRepository.GetAll();
             var categoryTask = _categoryRepository.GetAll();
@@ -49,6 +49,10 @@ namespace WebAnime.Controllers
             ViewBag.Country = countryTask.Result;
             ViewBag.Status = statusTask.Result;
             ViewBag.Type = typeTask.Result;
+        }
+        public async Task<ActionResult> Contact()
+        {
+            return await Task.FromResult(View());
         }
     }
 }

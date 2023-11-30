@@ -11,6 +11,7 @@ namespace WebAnime.Util
 {
     public class MappingData
     {
+
         private static AnimeDbContext context=new AnimeDbContext();
 
         public static AnimeViewModel convertToAnimeViewModel(Animes anime)

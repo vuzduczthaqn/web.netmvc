@@ -1,5 +1,5 @@
-﻿@using DataModels.EF
-@model ViewModels.Admin.BlogViewModel
+﻿@using WebAnime.Models.Entities
+@model WebAnime.Models.ViewModel.Admin.BlogViewModel
 @{
     var blogCategories = ViewBag.BlogCategories as IEnumerable<BlogCategories> ?? new List<BlogCategories>();
 
@@ -95,7 +95,7 @@
 </div>
 @section footerCss
 {
-    <link href="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
+    <link href="~/Resources/Common/jQuery-MultiSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
         #Content, #BlogCategoryIds {
             top: 0;
@@ -108,7 +108,7 @@
 }
 @section footerJs{
     @Html.Partial("_ValidationScriptsPartial")
-    <script src="~/Resources/Library/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
+    <script src="~/Resources/Common/jQuery-MultiSelect/jquery.multiselect.js"></script>
 
     <script>
         function LoadFake(id, fakeId) {
@@ -123,7 +123,7 @@
         }
         bindingData();
         const editor = window.CKEDITOR.replace('ContentFake');
-        CKFinder.setupCKEditor(editor, "/Resources/Library/Common/ckfinder/");
+        CKFinder.setupCKEditor(editor, "/Resources/Common/ckfinder/");
 
         editor.on('change',
             function () {

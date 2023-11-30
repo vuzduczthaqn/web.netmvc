@@ -2,17 +2,13 @@
 @{
     ViewBag.Title = "Index";
 }
-<h1>hehe</h1>
 @using (Html.BeginForm("setData", "Home", FormMethod.Post))
 {
+<h1>
+    Trang chủ
+</h1>
+<h4>Chào mừng quay trở lại </h4>
+}
 
-<textarea name="abc" rows="10" cols="20" style="width:300px"></textarea>
-<button type="submit" style="margin:200px"> abc</button>
-}
-@section scripts{
-    <script>
-        CKEDITOR.replace("abc")
-    </script>
-}
 
 

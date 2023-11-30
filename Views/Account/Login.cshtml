@@ -38,7 +38,7 @@
             <div class="col-lg-6">
                 <div class="login__register">
                     <h3>Bạn chưa có tài khoản?</h3>
-                    <a href="#" class="primary-btn">Đăng ký</a>
+                    <a href="@Url.Action("Register", "Account")" class="primary-btn">Đăng ký</a>
                 </div>
             </div>
         </div>
@@ -46,16 +46,18 @@
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-6">
                     <div class="login__social__links">
-                        <span>or</span>
-                        <ul>
-                            <li>
-                                <a href="#" class="facebook">
-                                    <i class="fa fa-facebook"></i> Đăng nhập với
-                                    Facebook
-                                </a>
-                            </li>
-                            <li><a href="#" class="google"><i class="fa fa-google"></i> Đăng nhập với Google</a></li>
-                        </ul>
+                        <span>hoặc</span>
+                        @using (Html.BeginForm("ExternalLogin", "Account"))
+                        {
+                            <ul>
+                                <li>
+                                    <button name="provider" value="Google" class="site-btn">
+                                        <i class="fa fa-google"></i>
+                                        Đăng nhập với Google
+                                    </button>
+                                </li>
+                            </ul>
+                        }
                     </div>
                 </div>
             </div>

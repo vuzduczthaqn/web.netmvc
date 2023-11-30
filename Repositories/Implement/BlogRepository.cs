@@ -8,6 +8,7 @@ using System.Web;
 using WebAnime.Models;
 using WebAnime.Models.Entities;
 using WebAnime.Models.ViewModel.Admin;
+using WebAnime.Models.ViewModel.Client;
 using WebAnime.Repository.Interface;
 
 namespace WebAnime.Repositories.Implement
@@ -107,13 +108,7 @@ namespace WebAnime.Repositories.Implement
                 return false;
             }
         }
-
-        public Task<BlogViewModel> GetBlogViewModel(int blogId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Paging<Blogs>> GetPaping(string searchTitile, int pageSize, int pageNumber)
+        public async Task<Paging<Blogs>> GetPaging(string searchTitile, int pageSize, int pageNumber)
         {
             var searchResult = Context.Blogs
                 .Where(x =>
@@ -133,11 +128,43 @@ namespace WebAnime.Repositories.Implement
             };
             return await Task.FromResult(result);
         }
-
-        public Task<Blogs> GetByIdForClient(int id)
+        public async Task<WebAnime.Models.ViewModel.Client.BlogViewModel> GetBlogViewModel(int blogId)
         {
-            throw new NotImplementedException();
+            var result = await Context.Blogs
+                .Include(blogs => blogs.BlogCategories)
+                .Include(blogs => blogs.BlogComments.Select(blogComments => blogComments.User))
+                .FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == blogId);
+            if (result == null) return null;
+            return new WebAnime.Models.ViewModel.Client.BlogViewModel()
+            {
+                Id = result.Id,
+                CreatedBy = result.CreatedBy,
+                CreatedDate = result.CreatedDate ?? DateTime.Now,
+                Content = result.Content,
+                Slug = result.Slug,
+                Title = result.Title,
+                ImageUrl = result.ImageUrl,
+                BlogCategories = result.BlogCategories
+                    .Where(x => !x.IsDeleted)
+                    .Select(x => new BlogCategoryViewModel()
+                    { Id = x.Id, Name = x.Name }
+                    ),
+                BlogComments = result.BlogComments
+                    .Where(x => !x.IsDeleted)
+                    .Select(x => new BlogCommentViewModel()
+                    {
+                        Id = x.Id,
+                        AvatarUrl = x.User.AvatarUrl,
+                        BlogId = blogId,
+                        Content = x.Content,
+                        CreatedBy = x.CreatedBy ?? 1,
+                        CreatedDate = x.CreatedDate ?? DateTime.Now,
+                    }
+                    )
+            };
+
         }
+
 
         private async Task UpdateCategories(Blogs entity, Blogs updateEntity)
         {
@@ -172,11 +199,6 @@ namespace WebAnime.Repositories.Implement
             dest.Content = source.Content;
             dest.ImageUrl = source.ImageUrl;
             dest.ModifiedBy = source.ModifiedBy;
-        }
-
-        Task<Models.ViewModel.Client.BlogViewModel> IBlogRepository.GetBlogViewModel(int blogId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

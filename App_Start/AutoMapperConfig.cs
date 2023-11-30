@@ -62,6 +62,22 @@ namespace WebAnime.App_Start
                                     .GetRoleIdsFromUser(NInjectConfig.GetService<UserManager>(), user.Id)
                             )
                         );
+                    cfg.CreateMap<Users, WebAnime.Models.ViewModel.Admin.UserViewModel>()
+                        .ForMember
+                        (
+                            x => x.RoleList,
+                            options => options.MapFrom(
+                                user =>
+                                    NInjectConfig.GetService<UserManager>().GetRoles(user.Id).ToArray()
+                            )
+                        )
+                        .ForMember(
+                            x => x.RoleListIds,
+                            options => options.MapFrom(user =>
+                                NInjectConfig.GetService<RoleManager>()
+                                    .GetRoleIdsFromUser(NInjectConfig.GetService<UserManager>(), user.Id)
+                            )
+                        );
 
                     cfg.CreateMap<ExternalLoginConfirmationViewModel, Users>();
 
@@ -99,6 +115,7 @@ namespace WebAnime.App_Start
                     cfg.CreateMap<Comments, CommentViewModel>();
 
                     cfg.CreateMap<RegisterViewModel, Users>();
+                    cfg.CreateMap<Users, UserChangePasswordViewModel>();
 
                 }
             );

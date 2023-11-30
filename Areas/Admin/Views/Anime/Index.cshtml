@@ -6,73 +6,102 @@
     int firstServerId = (int)ViewBag.FirstServerId;
 }
 
-    <div class="row">
-        <div class="col-auto">
-            <h2>
-                Quản lý Anime
-            </h2>
+<div class="row">
+    <div class="col-auto">
+        <h2>
+            Quản lý Anime
+        </h2>
+    </div>
+    <div class="col-auto">
+        @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="row mb-3 justify-content-center">
+        <label class="col-form-label col-auto" for="searchTitle">Tiêu đề</label>
+        <div class="col-3">
+            <input type="text" name="searchTitle" id="searchTitle" value="" class="form-control" />
         </div>
-        <div class="col-auto">
-            @Html.ActionLink("Thêm mới", "Create", null, new { @class = "text-decoration-none btn btn-primary" })
+        <div class="col-3">
+            <button type="button" class="btn btn-info btnSearch">Tìm kiếm</button>
+        </div>
+        <label class="col-form-label col-auto" for="pageNumber">Trang</label>
+
+        <div class="col-2">
+            <input type="number" name="pageNumber" id="pageNumber" class="form-control" min="1" max="10" value="1" />
+        </div>
+
+    </div>
+}
+
+<div class="">
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.Title)
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.OriginalTitle)
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.Duration)
+
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.TotalEpisodes)
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.Synopsis)
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.Release)
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    @Html.DisplayNameFor(x => x.CategoriesId)
+                </th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    Chức năng
+                </th>
+            </tr>
+        </thead>
+
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</div>
+<div class="modal fade"
+     id="btn-anime-synopsis"
+     tabindex="-1"
+     aria-labelledby="bs-example-modal-lg"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+                <h4 class="modal-title" id="myLargeModalLabel">
+                    Nội dung anime
+                </h4>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body animeSynopsis">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-light-primary text-primary  text-start"
+                        data-bs-dismiss="modal">
+                    Đóng
+                </button>
+            </div>
         </div>
     </div>
-
-    @using (Html.BeginForm())
-    {
-        <div class="row mb-3 justify-content-center">
-            <label class="col-form-label col-auto" for="searchTitle">Tiêu đề</label>
-            <div class="col-3">
-                <input type="text" name="searchTitle" id="searchTitle" value="" class="form-control" />
-            </div>
-            <div class="col-3">
-                <button type="button" class="btn btn-info btnSearch">Tìm kiếm</button>
-            </div>
-            <label class="col-form-label col-auto" for="pageNumber">Trang</label>
-
-            <div class="col-2">
-                <input type="number" name="pageNumber" id="pageNumber" class="form-control" min="1" max="10" value="1" />
-            </div>
-
-        </div>
-    }
-
-    <div class="">
-        <table class="table table-hover table-bordered">
-            <thead>
-                <tr>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.Title)
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.OriginalTitle)
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.Duration)
-
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.TotalEpisodes)
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.Synopsis)
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.Release)
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        @Html.DisplayNameFor(x => x.CategoriesId)
-                    </th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        Chức năng
-                    </th>
-                </tr>
-            </thead>
-
-            <tbody id="tableBody">
-                
-            </tbody>
-        </table>
-    </div>
+</div>
+</div>
 @section footerJs
 {
     <script>

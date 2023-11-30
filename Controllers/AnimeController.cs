@@ -54,11 +54,27 @@ namespace WebAnime.Controllers
         [HttpGet]
         public async Task<ActionResult> AnimeTrending()
         {
-            var animeTrending = await _animeRepository.GetAnimeTrending(9);
-           
-            return await Task.FromResult(PartialView(animeTrending));
+            int totalPage = await _animeRepository.GetCountTotalAnime();
+            ViewBag.AnimeTotal = totalPage;
+            return View();
         }
-
+        [HttpGet]
+        public async Task<ActionResult> AnimeTrendingData(int start)
+        {
+            var result = await _animeRepository.GetPageAnimeTrending(start);
+            return await Task.FromResult(
+                Json(new
+                {
+                    data = result.Data,
+                    result.PageCount,
+                    result.TotalPages,
+                    result.PageSize,
+                    result.PageNumber
+                },
+                    JsonRequestBehavior.AllowGet
+                    )
+               );
+        }
 
         [ChildActionOnly]
         [HttpGet]
@@ -170,13 +186,10 @@ namespace WebAnime.Controllers
         {
             model.CategoryIds = new int[] { };
             var result = await _animeRepository.AdvanceSearch(model);
-
-
             return await Task.FromResult(
                 Json(new
                 {
                     data = result.Data,
-                    //result.PageCount,
                     result.TotalPages,
                     result.PageSize,
                     result.PageNumber

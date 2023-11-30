@@ -163,5 +163,10 @@ namespace WebAnime.Repositories.Implement.Dapper
             return await _connection.QueryAsync<BlogCommentViewModel>(procName, new { @BlogId = blogId },
                 commandType: CommandType.StoredProcedure);
         }
+
+        public Task<Paging<Blogs>> GetPaging(string searchTitle, int pageSize, int pageNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

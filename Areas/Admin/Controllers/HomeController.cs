@@ -13,7 +13,7 @@ using WebAnime.Repository.Interface;
 
 namespace WebAnime.Areas.Admin.Controllers
 {
-    //[AdminAreaAuthorize]
+    [AdminAreaAuthorize]
     public class HomeController : Controller
     {
         public ActionResult Index()

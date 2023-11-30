@@ -40,4 +40,4 @@ namespace WebAnime.Models.ViewModel.Admin
         [Required(ErrorMessage = "{0} là bắt buộc")]
         public int[] BlogCategoryIds { get; set; }
     }
-}
+    }

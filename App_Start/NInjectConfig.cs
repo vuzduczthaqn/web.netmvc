@@ -7,12 +7,12 @@ using System.Reflection;
 using System.Web;
 using WebAnime.Models;
 using WebAnime.Repositories.Implement;
-using WebAnime.Repositories;
 using WebAnime.Repository.Interface;
-using DataModels.EF;
 using System.Data.SqlClient;
 using System.Data;
 using WebAnime.Repositories.Implement.Dapper;
+using Microsoft.AspNet.Identity;
+using WebAnime.Models.Entities.Identity;
 
 namespace WebAnime.App_Start
 {
@@ -46,7 +46,42 @@ namespace WebAnime.App_Start
             kernel.Bind<IMapper>().ToConstant(AutoMapperConfig.RegisterAutoMapper());
             RegisterRepository(kernel);
             RegisterRepositoryDapper(kernel);
-            //RegisterOwinContext(kernel);
+            RegisterOwinContext(kernel);
+            RegisterIdentityManagers(kernel);
+            RegisterIdentityStores(kernel);
+        }
+        public static void RegisterIdentityStores(IKernel kernel)
+        {
+            kernel.Bind<IRoleStore<Roles, int>>().ToMethod(ninjectContext =>
+            {
+                var dbContext = ninjectContext.Kernel.Get<AnimeDbContext>();
+                return new RoleStore(dbContext);
+            }
+            );
+            kernel.Bind<IUserStore<Users, int>>().ToMethod(ninjectContext =>
+            {
+                var dbContext = ninjectContext.Kernel.Get<AnimeDbContext>();
+                return new UserStore(dbContext);
+            });
+        }
+        public static void RegisterIdentityManagers(IKernel kernel)
+        {
+            kernel.Bind<RoleManager<Roles, int>>().ToMethod(ninjectContext =>
+            {
+                var roleStore = ninjectContext.Kernel.Get<RoleStore>();
+                return new RoleManager(roleStore);
+            }
+            );
+            kernel.Bind<UserManager<Users, int>>().ToMethod(ninjectContext =>
+            {
+                var userStore = ninjectContext.Kernel.Get<UserStore>();
+
+
+                var userManager = new UserManager(userStore);
+
+                return userManager;
+            });
+
 
         }
 

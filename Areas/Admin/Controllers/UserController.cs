@@ -11,25 +11,28 @@ using static WebAnime.Util.MappingData;
 using WebAnime.Models.Entities;
 using WebAnime.Models.Helpers;
 using WebAnime.Components;
+using AutoMapper;
 
 namespace WebAnime.Areas.Admin.Controllers
 {
-    //[AdminAreaAuthorize]
+    [AdminAreaAuthorize]
     public class UserController : Controller
     {
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
+        private readonly IMapper _mapper;
 
-        public UserController(UserManager userManager, RoleManager roleManager)
+        public UserController(UserManager userManager, RoleManager roleManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-
+            _mapper = mapper;
         }
         public async Task<ActionResult> Index()
         {
             var users = _userManager.Users.Where(x => !x.IsDeleted);
-            var usersViewModel = users.Select(x=>converToUserModel(x)).ToList();
+            var usersViewModel = _mapper.Map<IQueryable<Users>, IEnumerable<WebAnime.Models.ViewModel.Admin.UserViewModel>> (users);
+
             return await Task.FromResult(View(usersViewModel));
         }
         [HttpGet]

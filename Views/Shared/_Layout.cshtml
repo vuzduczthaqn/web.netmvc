@@ -1,10 +1,10 @@
-﻿@*@using WebAnime.Models.Entities.Identity;
+﻿@using WebAnime.Models.Entities.Identity;
 @using WebAnime.App_Start;
 @using Microsoft.AspNet.Identity
 @{
     var userManager = NInjectConfig.GetService<UserManager>();
     var currentUser = userManager.FindById(User.Identity.GetUserId<int>());
-}*@
+}
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -58,23 +58,6 @@
                                 <li class="active1">
                                     <a href="@Url.Action("Index","Home")">Trang chủ</a>
                                 </li>
-                                @*<li>
-                                        <a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
-                                        <ul class="dropdown">
-                                            <li>
-                                                <a href="./categories.html">Categories</a>
-                                            </li>
-                                            <li>
-                                                <a href="./anime-details.html">Anime Details</a>
-                                            </li>
-                                            <li>
-                                                <a href="./anime-watching.html">Anime Watching</a>
-                                            </li>
-                                            <li>
-                                                <a href="./blog-details.html">Blog Details</a>
-                                            </li>
-                                        </ul>
-                                    </li>*@
                                 <li>
                                     <a href="@Url.Action("Index","Blog")">Our Blog</a>
                                 </li>
@@ -88,14 +71,19 @@
                 <div class="col-lg-2">
                     <div class="header__right">
                         <a href="@Url.Action("Search", "Home")"><span class="icon_search"></span></a>
-                        <a href="@Url.Action("Info", "Account")">
-                            @*@if (currentUser != null)
-                                {
-                                    <span>@currentUser.FullName</span>
-                                }*@
-                            <span class="icon_profile"></span>
-                        </a>
+                        @if (currentUser != null)
+                        {
+                            
+
+                            <a href="@Url.Action("Info", "Account")"><span>@currentUser.FullName</span> <span class="icon_profile"></span></a>
+
+                        }
+                        else
+                        { <a href="@Url.Action("Login", "Account")"><span class="icon_profile"></span></a>
+                            }
                     </div>
+                                
+                              
                 </div>
             </div>
             <div id="mobile-menu-wrap"></div>

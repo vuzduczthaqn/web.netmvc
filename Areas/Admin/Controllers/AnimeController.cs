@@ -14,7 +14,7 @@ using static WebAnime.Util.MappingData;
 
 namespace WebAnime.Areas.Admin.Controllers
 {
-    //[AdminAreaAuthorize]
+    [AdminAreaAuthorize]
     public class AnimeController : Controller
     {
         private readonly IAnimeRepository _animeRepository;

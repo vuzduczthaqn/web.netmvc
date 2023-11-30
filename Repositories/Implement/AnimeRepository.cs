@@ -323,29 +323,31 @@ namespace WebAnime.Repositories.Implement
 
         public async Task<Paging<AnimeItemViewModel>> AdvanceSearch(AnimeSearchViewModel model)
         {
+            if (model.SearchTitle == null)
+                model.SearchTitle = "";
+            model.SearchTitle = model.SearchTitle.ToLower();
             int length = model.CategoryIds.Length;
             var result = context.Animes
-                .Where(x =>
-                    !x.IsDeleted &&
-                    (x.Title.ToLower().Contains(model.SearchTitle.ToLower()) ||
-                     String.IsNullOrEmpty(model.SearchTitle)) &&
-                    (x.OriginalTitle.ToLower().Contains(model.SearchTitle.ToLower()) ||
-                     String.IsNullOrEmpty(model.SearchTitle)) &&
-                    (x.TypeId == model.TypeId || model.TypeId == 0) &&
-                    (x.CountryId == model.CountryId || model.CountryId == 0) &&
-                    (x.StatusId == model.StatusId || model.StatusId == 0) &&
-                    (x.AgeRatingId == model.AgeRatingId || model.AgeRatingId == 0) &&
-                    (model.CategoryIds.Except(x.Categories
-                        .Where(c => !c.IsDeleted)
-                        .Select(c => c.Id)).Count() != length || length == 0) &&
-                    (model.RatingHigher <=
-                     (x.Ratings.Any() ? x.Ratings.Sum(r => r.RatePoint) * 1.0 / x.Ratings.Count() : 1) ||
-                     model.RatingHigher == 0)
-                    && (model.ViewCountHigher <= x.ViewCount || model.ViewCountHigher == 0)
+                .Where((x) =>
+                            !x.IsDeleted &&
+                            ((x.Title.ToLower().Contains(model.SearchTitle) || String.IsNullOrEmpty(model.SearchTitle)) ||
+                            (x.OriginalTitle.ToLower().Contains(model.SearchTitle) || String.IsNullOrEmpty(model.SearchTitle))) &&
+                            (x.TypeId == model.TypeId || model.TypeId == 0) &&
+                            (x.CountryId == model.CountryId || model.CountryId == 0) &&
+                            (x.StatusId == model.StatusId || model.StatusId == 0) &&
+                            (x.AgeRatingId == model.AgeRatingId || model.AgeRatingId == 0) &&
+                            (model.CategoryIds.Except(
+                                x.Categories
+                                .Where(c => !c.IsDeleted)
+                                .Select(c => c.Id)).Count() != length || length == 0) &&
+                            (model.RatingHigher <=
+                             (x.Ratings.Any() ? x.Ratings.Sum(r => r.RatePoint) * 1.0 / x.Ratings.Count() : 1) ||
+                             model.RatingHigher == 0)
+                            && (model.ViewCountHigher <= x.ViewCount || model.ViewCountHigher == 0)
                 )
                 .OrderByDescending(x => x.ViewCount);
 
-
+            //var totalPages = result.Count();
             var totalPages = await result.CountAsync();
             return await Task.FromResult(new Paging<AnimeItemViewModel>()
             {
@@ -374,9 +376,33 @@ namespace WebAnime.Repositories.Implement
             });
         }
 
-        public Task<Paging<AnimeItemViewModel>> GetPageAnimeTrending(int start)
+        public async Task<Paging<AnimeItemViewModel>> GetPageAnimeTrending(int start)
         {
-            throw new NotImplementedException();
+            var result = context.Animes.Where(anime => !anime.IsDeleted)
+               .OrderByDescending(x => x.ViewCount)
+               .ThenByDescending(x => x.CreatedDate)
+               .ThenByDescending(x => x.ModifiedDate)
+               .Select(x => new AnimeItemViewModel()
+               {
+                   Id = x.Id,
+                   Title = x.Title,
+                   Poster = x.Poster,
+                   ViewCount = x.ViewCount,
+                   Type = x.Types.Name,
+                   Status = x.Statuses.Name,
+                   CurrentEpisode = x.Episodes
+                        .Where(z => !z.IsDeleted)
+                        .GroupBy(z => z.ServerId)
+                        .Max(t => t.Count()),
+                   TotalEpisode = x.TotalEpisodes,
+                   CommentCount = context.Comments.Count(y => y.AnimeId == x.Id)
+               }).Skip((start * 9)).Take(9);
+            return await Task.FromResult(new Paging<AnimeItemViewModel>()
+            {
+                Data = result,
+                PageCount = start + 1,
+                PageSize = 9
+            });
         }
 
         public async Task<Paging<AnimeItemViewModel>> GetPageAnimeRecenly(int start)

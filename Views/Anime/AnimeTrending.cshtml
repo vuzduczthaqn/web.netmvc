@@ -1,4 +1,8 @@
 ﻿@model WebAnime.Models.ViewModel.Client.AnimeItemViewModel
+@{
+    int totalPage = (int)ViewBag.AnimeTotal;
+    int pagecurrent = 0;
+}
 <h4>
     <a href="@Url.Action("Index","Home")">Trang chủ</a>
     >
@@ -7,21 +11,40 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div class="row searchAnime">
-            =
+
         </div>
     </div>
 </div>
+@{
+
+    if (pagecurrent <= totalPage && totalPage != 0)
+    {
+        <input value="0" type="hidden" class="page-current" />
+        <li class="page-item"><button class="page-link" type="submit">Tải thêm</button></li>
+
+    }
 }
+
+
 @section footerJs
 {
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="~/Resources/Client/js/jquery.nice-select.min.js"></script>
     <script>
+
+        $('.page-link').click(function () {
+            @( pagecurrent=pagecurrent+1)
+            const startValue = parseInt($('.page-current').val());
+            if (startValue >= 0 && startValue) {
+                sendRequest(startValue+1);
+            }
+            $(".page-current").val(startValue+1) ;
+        })
         const searchAnime = $(`.searchAnime`);
         searchAnime.html('');
-         sendRequest(1)
+         sendRequest(0)
         function sendRequest(startGetter) {
-                 const url = `@Url.Action("AnimeRecenlyData", "Anime")`;
+                 const url = `@Url.Action("AnimeTrendingData", "Anime")`;
                 $.ajax({
                     type: "GET",
                     url: url,
@@ -32,9 +55,6 @@
                     success: function (response) {
                         console.log(response);
                         dumpData(response.data);
-                        if (isChangeNumeric === true)
-                            changeNumeric(parseInt(response.TotalPages));
-
                     }
                 });
             function dumpData(data) {
@@ -43,7 +63,7 @@
 
                     const item = data[i];
                     const html = `
-                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="${item.Poster}">
                             <div class="ep">${item.CurrentEpisode} / ${item.TotalEpisode}</div>
@@ -67,7 +87,7 @@
                     $(this).css('background-image', 'url(' + bg + ')');
                 });
             }
-        }
 
+        }
     </script>
 }
