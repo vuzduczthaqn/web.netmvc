@@ -101,7 +101,6 @@ namespace WebAnime.Areas.Admin.Controllers
                     }
                     return RedirectToAction("Index");
                 }
-
                 x = 0;
                 foreach (var error in result.Errors)
                 {

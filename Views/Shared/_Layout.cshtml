@@ -69,14 +69,11 @@
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <div class="header__right">
+                    <div class="header__right" style="display:flex">
                         <a href="@Url.Action("Search", "Home")"><span class="icon_search"></span></a>
                         @if (currentUser != null)
                         {
-                            
-
-                            <a href="@Url.Action("Info", "Account")"><span>@currentUser.FullName</span> <span class="icon_profile"></span></a>
-
+                            <a href="@Url.Action("Info", "Account")" style="display:flex;align-items:center;justify-content:center"><p style=";color:white">@currentUser.FullName </p> <span class="icon_profile"></span></a>
                         }
                         else
                         { <a href="@Url.Action("Login", "Account")"><span class="icon_profile"></span></a>

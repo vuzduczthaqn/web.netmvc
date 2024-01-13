@@ -31,12 +31,11 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="~/Resources/Client/js/jquery.nice-select.min.js"></script>
     <script>
-
         $('.page-link').click(function () {
-            @( pagecurrent=pagecurrent+1)
             const startValue = parseInt($('.page-current').val());
             if (startValue >= 0 && startValue) {
-                sendRequest(startValue+1);
+                sendRequest(startValue);
+                @( pagecurrent=pagecurrent+1)
             }
             $(".page-current").val(startValue+1) ;
         })

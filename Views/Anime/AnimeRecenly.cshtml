@@ -36,7 +36,7 @@
             @( pagecurrent=pagecurrent+1)
             const startValue = parseInt($('.page-current').val());
             if (startValue >= 0 && startValue) {
-                sendRequest(startValue+1);
+                sendRequest(startValue);
             }
             $(".page-current").val(startValue+1) ;
         })

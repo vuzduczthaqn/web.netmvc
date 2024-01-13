@@ -60,22 +60,8 @@ namespace WebAnime.Areas.Admin.Controllers
                 }
                 else
                 {
-                    int loginFailCount = (int)(Session[CommonConstants.LoginFailCount] ?? 0);
-
-                    if (loginFailCount == AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1)
-                    {
-                        ModelState.AddModelError("FakeLogin", @"Bạn đang cố đăng nhập vì điều gì?");
-                        ModelState.AddModelError("Hint", @"Chưa có tài khoản? Hãy liên hệ admin để được cấp");
-                        ModelState.AddModelError("AdminFb", @"Facebook: https://facebook.com/vuthemanh1707");
-                        Session.Remove(CommonConstants.LoginFailCount);
-
-                        return View();
-                    }
                     ModelState.AddModelError(string.Empty,
-                        $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - loginFailCount} lượt)");
-
-                    loginFailCount++;
-                    Session[CommonConstants.LoginFailCount] = loginFailCount;
+                        $@"Đăng nhập thất bại, vui lòng thử lại)");
 
                     return View(model);
 
@@ -83,28 +69,17 @@ namespace WebAnime.Areas.Admin.Controllers
                 SignInStatus signInStatus =
                     await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
-                switch (signInStatus)
+                if (signInStatus == SignInStatus.Success)
                 {
-
-                    case SignInStatus.Success:
-                        Session.Remove(CommonConstants.LoginFailCount);
-                        await _userManager.SetLockoutEnabledAsync(user.Id, false);
-                        await _userManager.ResetAccessFailedCountAsync(user.Id);
-                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                        {
-                            return Redirect(returnUrl);
-                        }
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
 
 
-                        return RedirectToAction("Index", "Home");
-                    case SignInStatus.LockedOut:
-                        ModelState.AddModelError("LockoutMessage",
-                            $@"Tài khoản của bạn đã bị khóa do đăng nhập sai quá {AuthConstants.MaxFailedAccessAttemptsBeforeLockout} lần hoặc bị admin khóa.");
-                        ModelState.AddModelError("LogoutHint", $@"Vui lòng thử lại sau {AuthConstants.LockoutMinutes} phút. hoặc liên hệ admin.");
-                        return View();
-
-                    case SignInStatus.Failure:
-                    default:
+                    return RedirectToAction("Index", "Home");
+                }
+                else {
                         ModelState.AddModelError(string.Empty,
                             $@"Đăng nhập thất bại, vui lòng thử lại (còn {AuthConstants.MaxFailedAccessAttemptsBeforeLockout - 1 - user.AccessFailedCount} lượt)");
                         return View(model);
@@ -141,13 +116,6 @@ namespace WebAnime.Areas.Admin.Controllers
                     ModelState.AddModelError("NotFoundUser", @"Không thấy user");
                     return View(model);
                 }
-
-                if (!(await _userManager.IsEmailConfirmedAsync(user.Id)))
-                {
-                    ModelState.AddModelError("NoConfirmEmail", @"Email chưa được xác nhận");
-                    return View(model);
-                }
-
                 if (user.IsDeleted)
                 {
                     ModelState.AddModelError("DeletedAccount", @"Tài khoản đã bị xóa khỏi hệ thống, vui lòng liên hệ admin để cập nhật");

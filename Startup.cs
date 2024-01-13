@@ -21,49 +21,49 @@ namespace WebAnime
         //CreateDefaultRoles();
         //CreateDefaultUsers();
     }
-    RoleManager _roleManager;
-    UserManager _userManager;
-    void RegisterServices()
-    {
-        _roleManager = NInjectConfig.GetService<RoleManager>();
-        _userManager = NInjectConfig.GetService<UserManager>();
-    }
-    void CreateDefaultRoles()
-    {
-        _roleManager
-            .CreateRoleIfNotExist("adMIN")
-            .CreateRoleIfNotExist("MANAgeR")
-            .CreateRoleIfNotExist("User");
-    }
+    //RoleManager _roleManager;
+    //UserManager _userManager;
+    //void RegisterServices()
+    //{
+    //    _roleManager = NInjectConfig.GetService<RoleManager>();
+    //    _userManager = NInjectConfig.GetService<UserManager>();
+    //}
+    //void CreateDefaultRoles()
+    //{
+    //    _roleManager
+    //        .CreateRoleIfNotExist("adMIN")
+    //        .CreateRoleIfNotExist("MANAgeR")
+    //        .CreateRoleIfNotExist("User");
+    //}
 
-    void CreateDefaultUsers()
-    {
-        var adminUser = new Users()
-        {
-            UserName = "talonezio",
-            BirthDay = new DateTime(2003, 7, 17),
-            Email = "vuthemanh1707@gmail.com",
-            AvatarUrl = CommonConstants.DefaultAvatarUrl,
-            PhoneNumber = "0988344814",
-            EmailConfirmed = true,
-            PhoneNumberConfirmed = true
-        };
-        var managerUser = new Users()
-        {
-            UserName = "vuthemanh1707",
-            BirthDay = new DateTime(2003, 7, 17),
-            Email = "vuthemanh333@gmail.com",
-            AvatarUrl = CommonConstants.DefaultAvatarUrl,
-            PhoneNumber = "0988344814",
-            EmailConfirmed = true,
-            PhoneNumberConfirmed = true
-        };
+    //void CreateDefaultUsers()
+    //{
+    //    var adminUser = new Users()
+    //    {
+    //        UserName = "talonezio",
+    //        BirthDay = new DateTime(2003, 7, 17),
+    //        Email = "vuthemanh1707@gmail.com",
+    //        AvatarUrl = CommonConstants.DefaultAvatarUrl,
+    //        PhoneNumber = "0988344814",
+    //        EmailConfirmed = true,
+    //        PhoneNumberConfirmed = true
+    //    };
+    //    var managerUser = new Users()
+    //    {
+    //        UserName = "vuthemanh1707",
+    //        BirthDay = new DateTime(2003, 7, 17),
+    //        Email = "vuthemanh333@gmail.com",
+    //        AvatarUrl = CommonConstants.DefaultAvatarUrl,
+    //        PhoneNumber = "0988344814",
+    //        EmailConfirmed = true,
+    //        PhoneNumberConfirmed = true
+    //    };
 
-        var defaultPassword = "manhngu123";
+    //    var defaultPassword = "manhngu123";
 
-        _userManager
-            .CreateUserIfNotExist(adminUser, defaultPassword, "Admin")
-            .CreateUserIfNotExist(managerUser, defaultPassword, "Manager");
-    }
+    //    _userManager
+    //        .CreateUserIfNotExist(adminUser, defaultPassword, "Admin")
+    //        .CreateUserIfNotExist(managerUser, defaultPassword, "Manager");
+    //}
 }
 }
